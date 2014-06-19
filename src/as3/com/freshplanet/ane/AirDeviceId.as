@@ -31,6 +31,9 @@ package com.freshplanet.ane
 		private var _id 	: String = null;
 		private var _idfv	: String = null;
 		private var _idfa	: String = null;
+        
+        private var _model  : String = null;
+        private var _version: String = null;
 		
 		public function AirDeviceId()
 		{
@@ -101,6 +104,52 @@ package com.freshplanet.ane
 			
 			return this._id;
 		}
+        
+        /**
+         * Get the Device Model (incl. Manufacturer)
+         * @return  String formatted as 'Manufacturere MODEL'
+         */
+        public function getModel():String
+        {
+            if (!this.isOnDevice)
+            {
+                return "Simulator";
+            }
+            if (!this._model)
+            {
+                this._model = this.extCtx.call('getModel') as String;
+                
+                // bad response from device
+                if (this._model == null)
+                {
+                    this._model = "Unknown";
+                }
+            }
+            return this._model;
+        }
+        
+        /**
+         * Get OS version of device
+         * @return String representing OS version (e.g. '4.3.3')
+         */
+        public function getVersion():String
+        {
+            if (!this.isOnDevice)
+            {
+                return "Simulator";
+            }
+            if (!this._version)
+            {
+                this._version = this.extCtx.call('getVersion') as String;
+                
+                // bad response from device
+                if (this._version == null)
+                {
+                    this._version = "Unknown";
+                }
+            }
+            return this._version;
+        }
 		
 		/**
 		 * @return vendor id or null on unavailable/Android
