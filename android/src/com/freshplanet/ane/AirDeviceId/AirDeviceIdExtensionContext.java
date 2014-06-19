@@ -30,6 +30,8 @@ import com.freshplanet.ane.AirDeviceId.functions.IsSupportedFunction;
 import com.freshplanet.ane.AirDeviceId.functions.getIDFAFunction;
 import com.freshplanet.ane.AirDeviceId.functions.getIDFVFunction;
 import com.freshplanet.ane.AirDeviceId.functions.getIDFunction;
+import com.freshplanet.ane.AirDeviceId.functions.GetModelFunction;
+import com.freshplanet.ane.AirDeviceId.functions.GetVersionFunction;
 
 public class AirDeviceIdExtensionContext extends FREContext 
 {
@@ -60,6 +62,8 @@ public class AirDeviceIdExtensionContext extends FREContext
 		functionMap.put("getID", new getIDFunction());
 		functionMap.put("getIDFV", new getIDFVFunction());
 		functionMap.put("getIDFA", new getIDFAFunction());
+                functionMap.put("getModel", new GetModelFunction());
+		functionMap.put("getVersion", new GetVersionFunction());
 		
 		return functionMap;	
 	}
