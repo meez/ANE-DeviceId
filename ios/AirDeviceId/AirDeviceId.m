@@ -238,6 +238,54 @@ DEFINE_ANE_FUNCTION(getIDFA) {
     return fo;
 }
 
+DEFINE_ANE_FUNCTION(getModel)
+{
+    NSLog(@"Entering getModel()");
+
+    FREObject fo = NULL;
+
+    //TODO: Get actual model. @see https://github.com/erica/uidevice-extension for an example
+    FREResult aResult = FRENewObjectFromUTF8(@"iOS", &fo);
+    if (aResult == FRE_OK)
+    {
+        //things are fine
+        NSLog(@"Result = %d", aResult);
+    }
+    else
+    {
+        //aResult could be FRE_INVALID_ARGUMENT or FRE_WRONG_THREAD, take appropriate action.
+        NSLog(@"Result = %d", aResult);
+    }
+    
+    NSLog(@"Exiting getModel()");
+    
+    return fo;
+}
+
+DEFINE_ANE_FUNCTION(getVersion)
+{
+    NSLog(@"Entering getVersion()");
+
+    FREObject fo = NULL;
+    
+    //TODO: return correct OS Version. Possibly: [[UIDevice currentDevice] systemVersion]
+    FREResult aResult = FRENewObjectFromUTF8(@"Unknown", &fo);
+    if (aResult == FRE_OK)
+    {
+        //things are fine
+        NSLog(@"Result = %d", aResult);
+    }
+    else
+    {
+        //aResult could be FRE_INVALID_ARGUMENT or FRE_WRONG_THREAD, take appropriate action.
+        NSLog(@"Result = %d", aResult);
+    }
+    
+    NSLog(@"Exiting getVersion()");
+    
+    return fo;
+}
+
 #pragma mark - ANE setup
 
 /* AirDeviceIdExtInitializer()
