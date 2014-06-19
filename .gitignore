@@ -1,5 +1,7 @@
 # General
 temp
+build
+android/build/*
 build.config
 build.properties
 
