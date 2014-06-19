@@ -1,6 +1,7 @@
 # General
 temp
 build.config
+build.properties
 
 # Flash Builder
 actionscript/bin
