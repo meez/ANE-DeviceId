@@ -83,97 +83,6 @@ DEFINE_ANE_FUNCTION(IsSupported)
     return fo;
 }
 
-//DEFINE_ANE_FUNCTION(getDeviceId)
-//{
-//    NSLog(@"Entering getDeviceId()");
-//    FREObject fo;
-//    
-//    // get the id
-//    NSString * idString;
-//    
-//    if([[UIDevice currentDevice] respondsToSelector:@selector(identifierForVendor)])
-//    {
-//        NSLog(@"identifierForVendor supported");
-//        idString = [[[UIDevice currentDevice] identifierForVendor] UUIDString];
-//    }
-//    // Forbidden by Apple starting 2013-05-01
-//    //else if([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)])
-//    //{
-//    //    NSLog(@"identifierForVendor not supported, using uniqueIdentifier");
-//    //    idString = [[UIDevice currentDevice] uniqueIdentifier];
-//    //}
-//    else
-//    {
-//        // get the salt
-//        uint32_t stringArgLength;
-//        const uint8_t *stringArg;
-//        
-//        NSString *salt;
-//        if (FREGetObjectAsUTF8(argv[0], &stringArgLength, &stringArg) != FRE_OK)
-//        {
-//            salt = @"";
-//        }
-//        else
-//        {
-//            salt = [NSString stringWithUTF8String:(char*)stringArg];
-//        }
-//        
-//        // get the mac address id
-//        idString = [MacAddressUID uniqueIdentifierForSalt:salt];
-//    }
-//    
-//    // set the id in the response
-//    NSLog(@"id returned: %@", idString);
-//    FRENewObjectFromUTF8(strlen([idString UTF8String]), (const uint8_t *)[idString UTF8String], &fo);
-//    NSLog(@"Exiting getDeviceId()");
-//    return fo;
-//}
-//
-//DEFINE_ANE_FUNCTION(getAdvertisingId)
-//{
-//    NSLog(@"Entering getAdvertisingId()");
-//    FREObject fo;
-//    
-//    // get the id
-//    NSString * idString;
-//    
-//    if([[ASIdentifierManager sharedManager] respondsToSelector:@selector(advertisingIdentifier)])
-//    {
-//        NSLog(@"advertisingIdentifier supported");
-//        idString = [[[ASIdentifierManager sharedManager] advertisingIdentifier] UUIDString];
-//    }
-//    // Forbidden by Apple starting 2013-05-01
-//    //else if([[UIDevice currentDevice] respondsToSelector:@selector(uniqueIdentifier)])
-//    //{
-//    //    NSLog(@"advertisingIdentifier not supported, using uniqueIdentifier");
-//    //    idString = [[UIDevice currentDevice] uniqueIdentifier];
-//    //}
-//    else
-//    {
-//        // get the salt
-//        uint32_t stringArgLength;
-//        const uint8_t *stringArg;
-//        
-//        NSString *salt;
-//        if (FREGetObjectAsUTF8(argv[0], &stringArgLength, &stringArg) != FRE_OK)
-//        {
-//            salt = @"";
-//        }
-//        else
-//        {
-//            salt = [NSString stringWithUTF8String:(char*)stringArg];
-//        }
-//        
-//        // get the mac address id
-//        idString = [MacAddressUID uniqueIdentifierForSalt:salt];
-//    }
-//    
-//    NSLog(@"id returned: %@", idString);
-//    FRENewObjectFromUTF8(strlen([idString UTF8String]), (const uint8_t *)[idString UTF8String], &fo);
-//    NSLog(@"Exiting getAdvertisingId()");
-//    return fo;
-//}
-
 DEFINE_ANE_FUNCTION(getID) {
     
     NSLog(@"Entering getID()");
@@ -329,20 +238,12 @@ void AirDeviceIdContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     /* The following code describes the functions that are exposed by this native extension to the ActionScript code.
      * As a sample, the function isSupported is being provided.
      */
-    *numFunctionsToTest = 4;
+    *numFunctionsToTest = 6;
 
     FRENamedFunction* func = (FRENamedFunction*) malloc(sizeof(FRENamedFunction) * (*numFunctionsToTest));
     func[0].name = (const uint8_t*) "isSupported";
     func[0].functionData = NULL;
     func[0].function = &IsSupported;
-    
-//    func[1].name = (const uint8_t*) "getDeviceId";
-//    func[1].functionData = NULL;
-//    func[1].function = &getDeviceId;
-//    
-//    func[2].name = (const uint8_t*) "getAdvertisingId";
-//    func[2].functionData = NULL;
-//    func[2].function = &getAdvertisingId;
     
     func[1].name = (const uint8_t*) "getID";
     func[1].functionData = NULL;
@@ -355,6 +256,14 @@ void AirDeviceIdContextInitializer(void* extData, const uint8_t* ctxType, FRECon
     func[3].name = (const uint8_t*) "getIDFA";
     func[3].functionData = NULL;
     func[3].function = &getIDFA;
+    
+    func[4].name = (const uint8_t*) "getModel";
+    func[4].functionData = NULL;
+    func[4].function = &getModel;
+    
+    func[5].name = (const uint8_t*) "getVersion";
+    func[5].functionData = NULL;
+    func[5].function = &getVersion;
 
     *functionsToSet = func;
 
