@@ -154,7 +154,9 @@ DEFINE_ANE_FUNCTION(getModel)
     FREObject fo = NULL;
 
     //TODO: Get actual model. @see https://github.com/erica/uidevice-extension for an example
-    FREResult aResult = FRENewObjectFromUTF8(@"iOS", &fo);
+    NSString* modString = @"iOS";
+    FREResult aResult = FRENewObjectFromUTF8(strlen([modString UTF8String]), (const uint8_t *)[modString UTF8String], &fo);
+    
     if (aResult == FRE_OK)
     {
         //things are fine
@@ -177,8 +179,11 @@ DEFINE_ANE_FUNCTION(getVersion)
 
     FREObject fo = NULL;
     
-    //TODO: return correct OS Version. Possibly: [[UIDevice currentDevice] systemVersion]
-    FREResult aResult = FRENewObjectFromUTF8(@"Unknown", &fo);
+    NSString* verString = [[UIDevice currentDevice] systemVersion];
+        
+    NSLog(@"version returned: %@", verString);
+    FREResult aResult = FRENewObjectFromUTF8(strlen([verString UTF8String]), (const uint8_t *)[verString UTF8String], &fo);
+    
     if (aResult == FRE_OK)
     {
         //things are fine
