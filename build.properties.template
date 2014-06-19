@@ -10,7 +10,3 @@ ios.sdk.version=iphoneos
 # Android
 android.sdk.home=path/to/android-sdk-windows.
 android.sdk.platform=path/to/android-sdk-windows.8/platforms/android-17
-
-# Facebook
-facebook.sdk.ios=path/to/ios/sdk
-facebook.sdk.android=path/to/android/sdk

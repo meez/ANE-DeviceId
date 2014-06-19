@@ -2,93 +2,124 @@
 <project name="Air Native Extension Build Scripts" default="all">
 
     <!-- Config -->
-    <property file="build.config"/>
+    <import file="support/ant/air.xml"/>
+    <property file="build.properties"/>
+    
+    <property name="src.root" location="src"/>
+    <property name="src.as3" location="src/as3"/>
+    <property name="src.resources" location="src/resources"/>
+    
+    <property name="lib.root" location="lib"/>
+    
+    <property name="build.root" location="build"/>
+    <property name="build.package" location="build/package"/>
+    <property name="build.ane" location="build/ane"/>
+    
+    <condition property="bat" value=".bat" else=""><os family="windows" /></condition>
+    <condition property="exe" value=".exe" else=""><os family="windows" /></condition>
 
     <!-- All -->
-    <target name="all" depends="ios,android,swc,package" description="Full build of extension"/>
-
-    <!-- iOS -->
-    <target name="ios" description="Build iOS Library">
-        <mkdir dir="../temp/ios/build/"/>
-
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-alltargets clean"/>
-        </exec>
-
-        <exec executable="xcodebuild" failonerror="true" dir="../ios/">
-            <arg line="-project ${name}.xcodeproj"/>
-            <arg line="-sdk ${ios.sdkversion}"/>
-            <arg line="-alltargets"/>
-            <arg line="-configuration Release"/>
-            <arg line="SYMROOT=../temp/ios/build/"/>
-        </exec>
-
-        <copy file="../temp/ios/build/Release-iphoneos/lib${name}.a" todir="../temp/ios" overwrite="true"/>
-
-        <delete dir="../temp/ios/build/"/>
+    <target name="all" depends="clean, compile, package" description="Full build of ANE-DeviceId extension"/>
+    <target name="native-all" depends="clean, native-ios, native-android, package" description="Full build of ANE-DeviceId extension (incl. compilation of native code)"/>
+    
+    <target name="init">
+        <mkdir dir="${build.root}"/>
     </target>
 
-    <!-- Android -->
-    <target name="android" description="Build Android Library">
-        <delete dir="../android/temp"/>
-        <mkdir dir="../android/temp/classes"/>
-
-        <javac srcdir="../android/src" destdir="../android/temp/classes" includeantruntime="false">
-            <classpath>
-                <pathelement location="${android.sdk}/android.jar"/>
-                <pathelement location="${flex.sdk}/lib/android/FlashRuntimeExtensions.jar"/>
-            </classpath>
-        </javac>
-
-        <mkdir dir="../temp/android/"/>
-        <jar basedir="../android/temp/classes" destfile="../temp/android/lib${name}.jar"/>
-        <delete dir="../android/temp"/>
+    <target name="clean">
+        <delete dir="${build.root}"/>
     </target>
-
-    <!-- Actionscript -->
-    <target name="swc" description="Build SWC library">
-        <mkdir dir="../temp/swc/content/"/>
-
-        <fileset dir="../actionscript/src" casesensitive="yes" id="classfiles">
-            <include name="**/*.as"/>
-        </fileset>
-
-        <pathconvert property="classlist" refid="classfiles" pathsep=" " dirsep=".">
-            <regexpmapper from=".*src.(.*)\.as" to="\1"/>
-        </pathconvert>
-
-        <exec executable="${flex.sdk}/bin/compc${bin.ext}" failonerror="true">
-            <arg line='-source-path ../actionscript/src'/>
-            <arg line='-output ../temp/swc/${name}.swc'/>
+    
+    <!-- Compile -->
+    <target name="compile" depends="init" description="Build SWC library">
+    
+        <exec executable="${air.sdk.home}/bin/compc${exe}" failonerror="true">
+            <arg line='-include-sources ${src.as3}'/>
+            <arg line='-output ${build.package}/AirDeviceId.swc'/>
             <arg line='-swf-version=14'/>
-            <arg line='-external-library-path+="${flex.sdk}/frameworks/libs/air/airglobal.swc"'/>
-            <arg line='-include-classes ${classlist}'/>
+            <arg line='-external-library-path+="${air.sdk.home}/frameworks/libs/air/airglobal.swc"'/>
         </exec>
 
-        <unzip src="../temp/swc/${name}.swc" dest="../temp/swc/content" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/ios" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/android" overwrite="true"/>
-        <copy file="../temp/swc/content/library.swf" todir="../temp/default" overwrite="true"/>
-        <delete dir="../temp/swc/content/"/>
-    </target>
+        <unzip src="${build.package}/AirDeviceId.swc" dest="${build.package}">
+            <patternset>
+                <include name="library.swf"/>
+            </patternset>
+        </unzip>
 
+    </target>
+    
     <!-- Package -->
-    <target name="package" description="Create the extension package">
-        <exec executable="${flex.sdk}/bin/adt${bin.ext}" failonerror="true" dir="../temp">
+    <target name="package" depends="compile" description="Create the extension package">
+
+        <mkdir dir="${build.ane}"/>
+        <copy todir="${build.ane}/default">
+            <fileset dir="${build.package}">
+                <include name="library.swf"/>
+            </fileset>
+        </copy>
+        <copy todir="${build.ane}/android">
+            <fileset dir="${lib.root}/android"/>
+            <fileset dir="${build.package}">
+                <include name="library.swf"/>
+            </fileset>
+        </copy>
+        <copy todir="${build.ane}/ios">
+            <fileset dir="${lib.root}/ios"/>
+            <fileset dir="${build.package}">
+                <include name="library.swf"/>
+            </fileset>
+        </copy>
+
+        <exec executable="${air.sdk.home}/bin/adt${bat}" failonerror="true" dir="${build.ane}">
             <arg value="-package"/>
             <arg value="-target"/>
             <arg value="ane"/>
-            <arg value="${name}.ane"/>
-            <arg value="../build/extension.xml"/>
-            <arg line="-swc swc/${name}.swc"/>
-            <arg line="-platform iPhone-ARM -platformoptions ../build/platform.xml -C ios/ ."/>
+            <arg value="com.freshplanet.ane.AirDeviceId.ane"/>
+            <arg value="${src.resources}/extension.xml"/>
+            <arg line="-swc ${build.package}/AirDeviceId.swc"/>
+            <arg line="-platform iPhone-ARM -platformoptions ${src.resources}/platform.xml -C ios/ ."/>
             <arg line="-platform Android-ARM -C android/ ."/>
             <arg line="-platform default -C default/ ."/>
         </exec>
 
-        <move file="../temp/${name}.ane" todir="../bin"/>
-        <delete dir="../temp"/>
+    </target>
+    
+    <!-- iOS -->
+    <target name="native-ios" description="Build iOS">
+        <property name="build.ios.native" location="${build.root}/native/ios"/>
+
+        <delete dir="${build.ios.native}"/>
+        <mkdir dir="${build.ios.native}"/>
+
+        <exec executable="xcodebuild" failonerror="true" dir="ios">
+            <arg line="-project AirDeviceId.xcodeproj"/>
+            <arg line="-alltargets clean"/>
+        </exec>
+        
+        <exec executable="xcodebuild" failonerror="true" dir="ios">
+            <arg line="-project AirDeviceId.xcodeproj"/>
+            <arg line="-sdk ${ios.sdk.version}"/>
+            <arg line="-alltargets"/>
+            <arg line="-configuration Release"/>
+            <arg line="SYMROOT=${build.ios.native}"/>
+        </exec>
+        
+        <copy todir="${lib.root}/ios">
+            <fileset dir="${build.ios.native}/Release-iphoneos" includes="lib*.a"/>
+        </copy>
+    </target>
+
+    <!-- Android -->
+    <target name="native-android" description="Creates AirDeviceId.jar">
+  
+      <ant dir="android" inheritAll="false" inheritRefs="false" target="all"/>
+    
+        <copy todir="${lib.root}/android">
+            <fileset dir="android/build/package"/>
+        </copy>
+        
+        <delete dir="android/build"/>
+    
     </target>
 
 </project>
