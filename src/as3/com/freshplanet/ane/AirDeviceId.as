@@ -117,7 +117,7 @@ package com.freshplanet.ane
         
         /**
          * Get the Device Model (incl. Manufacturer)
-         * @return  String formatted as 'Manufacturere MODEL'
+         * @return  String formatted as 'Manufacturere MODEL'. May return 'Unknown'
          */
         public function getModel():String
         {
@@ -140,7 +140,7 @@ package com.freshplanet.ane
         
         /**
          * Get OS version of device
-         * @return String representing OS version (e.g. '4.3.3')
+         * @return String representing OS version (e.g. '4.3.3' or 'Unknown')
          */
         public function getVersion():String
         {
