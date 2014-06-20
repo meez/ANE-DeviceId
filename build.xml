@@ -110,7 +110,7 @@
     </target>
 
     <!-- Android -->
-    <target name="native-android" description="Creates AirDeviceId.jar">
+    <target name="native-android" description="Creates libAirDeviceId.jar">
   
       <ant dir="android" inheritAll="false" inheritRefs="false" target="all"/>
     
