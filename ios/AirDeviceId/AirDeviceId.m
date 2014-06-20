@@ -179,7 +179,8 @@ DEFINE_ANE_FUNCTION(getVersion)
 
     FREObject fo = NULL;
     
-    NSString* verString = [[UIDevice currentDevice] systemVersion];
+    //TODO: Return actual OS Version. Possibly: [[UIDevice currentDevice] systemVersion]
+    NSString* verString = @"Unknown";
         
     NSLog(@"version returned: %@", verString);
     FREResult aResult = FRENewObjectFromUTF8(strlen([verString UTF8String]), (const uint8_t *)[verString UTF8String], &fo);
