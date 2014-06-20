@@ -25,6 +25,16 @@ package com.freshplanet.ane
 
 	public class AirDeviceId extends EventDispatcher
 	{
+        //
+        // Definitions
+        //
+        
+        /** Unknown return */
+        public static const UNKNOWN:String = "Unknown";
+        
+        /** Simulator (Not on device) */
+        public static const SIMULATOR:String = "Simulator";
+        
 		private static var _instance:AirDeviceId;
 		
 		private var extCtx:ExtensionContext = null;
@@ -95,7 +105,7 @@ package com.freshplanet.ane
 		public function getID( salt:String ) : String {
 			
 			if ( !this.isOnDevice ) {
-				return "simulator";
+				return SIMULATOR;
 			}
 			
 			if ( !this._id ) {
@@ -113,16 +123,16 @@ package com.freshplanet.ane
         {
             if (!this.isOnDevice)
             {
-                return "Simulator";
+                return SIMULATOR;
             }
             if (!this._model)
             {
                 this._model = this.extCtx.call('getModel') as String;
                 
                 // bad response from device
-                if (this._model == null)
+                if (this._model==null || this._model.length==0)
                 {
-                    this._model = "Unknown";
+                    this._model = UNKNOWN;
                 }
             }
             return this._model;
@@ -136,16 +146,16 @@ package com.freshplanet.ane
         {
             if (!this.isOnDevice)
             {
-                return "Simulator";
+                return SIMULATOR;
             }
             if (!this._version)
             {
                 this._version = this.extCtx.call('getVersion') as String;
                 
                 // bad response from device
-                if (this._version == null)
+                if (this._version==null || this._version.length==0)
                 {
-                    this._version = "Unknown";
+                    this._version = UNKNOWN;
                 }
             }
             return this._version;
