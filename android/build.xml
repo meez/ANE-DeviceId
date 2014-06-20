@@ -39,7 +39,7 @@
 
   <target name="package" depends="compile">
 
-    <jar destfile="${build.package}/AirDeviceId.jar">
+    <jar destfile="${build.package}/libAirDeviceId.jar">
       <manifest>
         <attribute name="Implementation-Title" value="AirDeviceId ANE"/>
         <attribute name="Build-Time" value="${build.time}"/>
