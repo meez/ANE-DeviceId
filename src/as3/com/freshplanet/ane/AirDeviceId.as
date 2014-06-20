@@ -121,7 +121,7 @@ package com.freshplanet.ane
          */
         public function getModel():String
         {
-            if (!this.isOnDevice)
+            if (!this.isOnDevice || !isSupported())
             {
                 return SIMULATOR;
             }
@@ -144,7 +144,7 @@ package com.freshplanet.ane
          */
         public function getVersion():String
         {
-            if (!this.isOnDevice)
+            if (!this.isOnDevice || !isSupported())
             {
                 return SIMULATOR;
             }
