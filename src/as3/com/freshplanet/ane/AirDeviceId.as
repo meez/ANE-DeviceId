@@ -102,7 +102,7 @@ package com.freshplanet.ane
 		 * @param salt	a developer specific salt
 		 * @return		unique id for this device
 		 */
-		public function getID( salt:String ) : String {
+		public function getDeviceId( salt:String ) : String {
 			
 			if ( !this.isOnDevice ) {
 				return SIMULATOR;
